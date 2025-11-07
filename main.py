@@ -72,20 +72,27 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-        elif event.key in (pygame.K_1, pygame.K_2, pygame.K_3):
-            # cambiar resolución
-            current_res_key = chr(event.key)
-            WIDTH, HEIGHT = resolutions[current_res_key]
-            screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-        elif event.key == pygame.K_m:
-            interface_mode = 'maps'
-        elif event.key == pygame.K_s:
-            interface_mode = 'scifi'
-        elif event.key == pygame.K_SPACE:
-            simulate_movement = not simulate_movement
+
+            # Cambiar resolución con 1,2,3
+            elif event.key in (pygame.K_1, pygame.K_2, pygame.K_3):
+                current_res_key = chr(event.key)
+                WIDTH, HEIGHT = resolutions[current_res_key]
+                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+
+            # Cambiar modo interfaz
+            elif event.key == pygame.K_m:
+                interface_mode = 'maps'
+            elif event.key == pygame.K_s:
+                interface_mode = 'scifi'
+
+            # Activar/desactivar movimiento simulado
+            elif event.key == pygame.K_SPACE:
+                simulate_movement = not simulate_movement
+
     
     keys = pygame.key.get_pressed()
     if simulate_movement:

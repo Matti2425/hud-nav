@@ -27,9 +27,9 @@ def draw_scifi_style(screen, font, lat, lon, speed, heading, t):
     w, h = screen.get_size()
     # sombras y líneas
     for i in range(0, w, 80):
-    pygame.draw.line(screen, (0, 50, 50), (i, 0), (i, h), 1)
+        pygame.draw.line(screen, (0, 50, 50), (i, 0), (i, h), 1)
     for j in range(0, h, 60):
-    pygame.draw.line(screen, (0, 50, 50), (0, j), (w, j), 1)
+        pygame.draw.line(screen, (0, 50, 50), (0, j), (w, j), 1)
 
     # centro: retícula
     cx, cy = w // 2, h // 2
