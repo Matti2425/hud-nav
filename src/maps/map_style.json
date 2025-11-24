@@ -1,0 +1,10 @@
+{
+  "layers": {
+    "water": { "fill-color": "#A0C4FF" },
+    "building": { "fill-color": "#D0D0D0", "line-color": "#999999" },
+    "road": { "line-color": "#FFFFFF", "line-width": 2 },
+    "park": { "fill-color": "#C4E1A0" },
+    "landuse": { "fill-color": "#E0E0D0" },
+    "transportation": { "line-color": "#AAAAAA", "line-width": 2 }
+  }
+}

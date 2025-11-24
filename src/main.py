@@ -1,9 +1,6 @@
-import sys
-sys.path.insert(0, 'src')
-
 import pygame
 from config import *
-from gps import GPSSimulator, GPSReader
+from gps import GPSSimulator
 from ui.modes import MapMode, ScifiMode, SpeedometerMode
 
 pygame.init()
@@ -13,10 +10,7 @@ pygame.display.set_caption("HUD Navigation")
 font = pygame.font.SysFont('monospace', 24)
 clock = pygame.time.Clock()
 
-if SIMULATE_MOVEMENT:
-    gps = GPSSimulator(INITIAL_LAT, INITIAL_LON, INITIAL_SPEED, INITIAL_HEADING)
-else:
-    gps = GPSReader(GPS_PORT, GPS_BAUDRATE)
+gps = GPSSimulator(INITIAL_LAT, INITIAL_LON, INITIAL_SPEED, INITIAL_HEADING)
 
 modes = {
     'maps': MapMode(screen, font),
