@@ -38,15 +38,26 @@ class MapRenderer:
         if key in self.tile_cache:
             return self.tile_cache[key]
         if self.conn:
-            # Try 'tiles' table first, then 'map'
+            # Try 'tiles' table first, then 'map' with images join
             for table in ['tiles', 'map']:
                 tms_y = (2 ** z - 1) - y
-                self.cursor.execute(f"SELECT tile_data FROM {table} WHERE zoom_level=? AND tile_column=? AND tile_row=?",
-                                    (z, x, tms_y))
+                if table == 'tiles':
+                    self.cursor.execute(f"SELECT tile_data FROM {table} WHERE zoom_level=? AND tile_column=? AND tile_row=?",
+                                        (z, x, tms_y))
+                else:
+                    # For map table, join with images table
+                    self.cursor.execute("SELECT i.tile_data FROM map m JOIN images i ON m.tile_id = i.tile_id WHERE m.zoom_level=? AND m.tile_column=? AND m.tile_row=?",
+                                        (z, x, tms_y))
                 row = self.cursor.fetchone()
                 if row:
                     try:
-                        img = Image.open(io.BytesIO(row[0])).convert("RGBA")
+                        # Handle potential gzip compression
+                        tile_data = row[0]
+                        if tile_data.startswith(b'\x1f\x8b'):  # gzip header
+                            import gzip
+                            tile_data = gzip.decompress(tile_data)
+
+                        img = Image.open(io.BytesIO(tile_data)).convert("RGBA")
                         surf = pygame.image.fromstring(img.tobytes(), img.size, img.mode)
                         if len(self.tile_cache) >= self.cache_size:
                             self.tile_cache.pop(next(iter(self.tile_cache)))

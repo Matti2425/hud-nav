@@ -34,14 +34,20 @@ class VectorMapRenderer:
         return xtile, ytile
 
     def get_tile_data(self, z, x, y):
-        """Get tile data from the MBTiles 'map' table (OpenMapTiles vector tiles)."""
+        """Get tile data from the MBTiles 'map' table joined with 'images' table."""
         if not self.conn:
             return None
         tms_y = (2 ** z - 1) - y
-        self.cursor.execute("SELECT tile_data FROM map WHERE zoom_level=? AND tile_column=? AND tile_row=?", (z, x, tms_y))
+        # Join map and images tables to get tile data
+        self.cursor.execute("SELECT i.tile_data FROM map m JOIN images i ON m.tile_id = i.tile_id WHERE m.zoom_level=? AND m.tile_column=? AND m.tile_row=?", (z, x, tms_y))
         row = self.cursor.fetchone()
         if row:
-            return row[0]
+            tile_data = row[0]
+            # Handle gzip compression if present
+            if tile_data.startswith(b'\x1f\x8b'):  # gzip header
+                import gzip
+                tile_data = gzip.decompress(tile_data)
+            return tile_data
         else:
             print(f"No tile data for z={z}, x={x}, y={y} (tms_y={tms_y})")
             return None
